@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:postgresql://192.168.128.128:5432/ssdemo?useSSL=false
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password:
+    maxActive: 20
+    initialSize: 0
+    maxWait: 60000
+    minIdle: 1
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    maxOpenPreparedStatements: 20
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080

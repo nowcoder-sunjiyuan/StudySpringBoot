@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.netdata.mapper.UserMapper">
+    <resultMap type="com.example.netdata.domain.User" id="user">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <association property="role" column="roleid" javaType="com.example.netdata.domain.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rmask" property="mask"/>
+        </association>
+        <association property="department" column="departmentid"
+                     javaType="com.example.netdata.domain.Department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+    <select id="findByName" parameterType="java.lang.String" resultMap="user">
+				select u.* , r.id rid , r.name rname, r.mask rmask ,d.id did ,d.name dname from dic_user u, dic_role r, dic_department d where u.roleid=r.id and u.departmentid=d.id and u.name=#{name}
+		</select>
+    <select id="findById" parameterType="java.lang.Integer" resultMap="user">
+		select u.* , r.id rid , r.name rname, r.mask rmask ,d.id did ,d.name dname from dic_user u, dic_role r, dic_department d where u.roleid=r.id and u.departmentid=d.id and u.id=#{id}
+	</select>
+    <select id="findAccount" resultType="java.lang.Integer">
+	select count(*) from dic_user
+	</select>
+    <select id="findByPhone" parameterType="java.lang.String" resultMap="user">
+		select * from dic_user  where phone=#{phone}
+		</select>
+    <select id="findByDid" parameterType="java.lang.Integer" resultMap="user">
+		select *  from dic_user u , dic_department d, dic_role r where u.roleid=r.id and u.departmentid=d.id and d.id=#{id} 
+		</select>
+    <insert id="registerUser" parameterType="com.example.netdata.domain.User">
+		insert into dic_user (name , departmentid , password , phone , roleid) values (#{name} ,#{department.id},#{password},#{phone}, #{role.id})
+		</insert>
+    <update id="updateUser" parameterType="com.example.netdata.domain.User">
+        update dic_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">name=#{name},</if>
+            <if test="password!=null">password=#{password},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="role.id!=null">roleid=#{role.id},</if>
+            <if test="department.id!=null">departmentid=#{department.id},</if>
+        </trim>
+        where id=#{id}
+    </update>
+    <select id="findAll" resultMap="user" parameterType="map">
+			select u.* , r.id rid , r.name rname, r.mask rmask ,d.id did ,d.name dname from 
+			(select * from  dic_user limit #{pageSize}  offset #{currIndex})  as u
+			left join dic_role r on  u.roleid=r.id
+			left join dic_department d on 
+			u.departmentid=d.id 
+		</select>
+    <delete id="deleteUser" parameterType="com.example.netdata.domain.User">
+		delete from dic_user where id=#{id}
+		</delete>
+</mapper>
