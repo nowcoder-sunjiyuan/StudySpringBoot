@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @ClassName WebSecurityConfig
@@ -54,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("admin")
                 .antMatchers("/user/**").hasRole("operator")
                 .antMatchers("/resources/**").permitAll()
-
+                .antMatchers("/favicon.ico").permitAll()
                 /**
                  * 通过调用authorizeRequests()和 anyRequest().authenticated()就会要求所有进入应用的
                  * HTTP请求都要进行认证。
@@ -64,11 +65,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 /**
                  * 访问任何路径都会返回/index.html,index.html中username，password请求路径为loginProcessingUrl参数/login
                  */
-                .formLogin().loginPage("/login.html").loginProcessingUrl("/login").permitAll()
+                .formLogin().loginProcessingUrl("/login").permitAll()
                 .and()
                 .exceptionHandling().accessDeniedHandler(accessHandler);
 
-        //httpSecurity.addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         super.configure(httpSecurity);
     }

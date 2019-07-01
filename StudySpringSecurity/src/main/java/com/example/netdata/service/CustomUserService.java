@@ -23,6 +23,7 @@ import java.util.List;
 
 /**
  * 处理用户信息获取的逻辑
+ *
  * @author sjy
  */
 @Service
@@ -59,7 +60,7 @@ public class CustomUserService implements UserDetailsService {
         authorities.add(new SimpleGrantedAuthority("user"));
         String encode = passwordEncoder.encode("123456");
 
-        return new User(username,encode,true,true,true,true, authorities);
+        return new User(username, encode, true, true, true, true, authorities);
     }
 
 }
