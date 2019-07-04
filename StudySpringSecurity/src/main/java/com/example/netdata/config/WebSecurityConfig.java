@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 配置自定义的UserDetailService,为了进行自定义认证
+     *
      * @param auth
      * @throws Exception
      */
@@ -67,7 +68,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                  */
                 .formLogin().loginProcessingUrl("/login").permitAll()
                 .and()
-                .exceptionHandling().accessDeniedHandler(accessHandler);
+                .exceptionHandling().accessDeniedHandler(accessHandler)
+                .and()
+                .sessionManagement()
+                .maximumSessions(1).maxSessionsPreventsLogin(false).expiredSessionStrategy(event -> {
+            System.out.println("caicaiwo");
+        });
 
         httpSecurity.addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
@@ -76,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 这个过滤器是为了实现用json登录
+     *
      * @return
      * @throws Exception
      */
@@ -96,9 +103,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#configure(org.springframework.security.config.annotation.web.builders.WebSecurity)
      */
     @Override
-    public void configure(WebSecurity web) throws Exception{
-        web.ignoring().antMatchers("/login.html","/blogimg/**", "/index.html", "/static/**", "/code/image",
-                "/timeout","/css/**","/fonts/**","/img/**","/js/**");
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/login.html", "/blogimg/**", "/index.html", "/static/**", "/code/image",
+                "/timeout", "/css/**", "/fonts/**", "/img/**", "/js/**");
     }
 }
 
